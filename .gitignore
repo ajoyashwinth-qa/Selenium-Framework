@@ -3,3 +3,7 @@ target/
 *.iml
 /.classpath
 /.project
+
+# Local IDE/build/test output
+bin/
+test-output/
