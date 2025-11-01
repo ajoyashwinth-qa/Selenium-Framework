@@ -49,13 +49,18 @@ jobs:
 
       - name: Print environment (Windows)
         if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          echo "Java version:" 
-          java -version || true
-          echo "Maven wrapper version:"
-          if exist mvnw.cmd (mvnw.cmd -v) else (mvn -v)
-          echo "Workspace files:" 
-          dir
+          Write-Host "Java version:" 
+          java -version 2>&1 | Write-Host
+          Write-Host "Maven wrapper version:"
+          if (Test-Path './mvnw.cmd') {
+            & .\mvnw.cmd -v
+          } else {
+            & mvn -v
+          }
+          Write-Host "Workspace files:"
+          Get-ChildItem -Force
 
       - name: Grant execute permission to mvnw (Unix)
         if: runner.os != 'Windows'
@@ -70,10 +75,16 @@ jobs:
 
       - name: Run tests (Windows)
         if: runner.os == 'Windows'
+        shell: pwsh
         env:
           CHROME_BINARY: ${{ steps.chrome.outputs.chrome-path }}
           HEADLESS: true
-        run: mvnw.cmd -B -DskipTests=false clean test
+        run: |
+          if (Test-Path './mvnw.cmd') {
+            & .\mvnw.cmd -B -DskipTests=false clean test
+          } else {
+            & mvn -B -DskipTests=false clean test
+          }
 
       - name: Upload test reports
         if: always()

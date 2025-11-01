@@ -29,6 +29,10 @@ public class DriverFactory {
                 options.addArguments("--headless=new");
                 options.addArguments("--no-sandbox");
                 options.addArguments("--disable-dev-shm-usage");
+                // Additional flags to increase reliability in CI containers
+                options.addArguments("--disable-gpu");
+                options.addArguments("--disable-software-rasterizer");
+                options.addArguments("--remote-allow-origins=*");
             } else {
                 // Useful defaults for visible runs
                 options.addArguments("--start-maximized");
@@ -41,6 +45,17 @@ public class DriverFactory {
             }
 
             ChromeDriver chrome = new ChromeDriver(options);
+
+            // Log some helpful info to make CI debugging easier
+            try {
+                String browserVersion = (chrome.getCapabilities().getBrowserVersion() != null)
+                        ? chrome.getCapabilities().getBrowserVersion()
+                        : "unknown";
+                System.out.println("[DriverFactory] Chrome binary: " + (chromeBinary != null ? chromeBinary : "(default)") + ", browserVersion=" + browserVersion);
+            } catch (Exception e) {
+                System.out.println("[DriverFactory] Unable to determine browser version: " + e.getMessage());
+            }
+
             // Try to create a DevTools session, but don't fail the driver if it isn't available
             try {
                 DevTools dt = chrome.getDevTools();
