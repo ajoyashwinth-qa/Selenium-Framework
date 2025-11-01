@@ -17,6 +17,8 @@ jobs:
         java: [ '11', '17' ]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v4
@@ -64,14 +66,14 @@ jobs:
         env:
           CHROME_BINARY: ${{ steps.chrome.outputs.chrome-path }}
           HEADLESS: true
-        run: ./mvnw -B -DskipTests=false test
+        run: ./mvnw -B -DskipTests=false clean test
 
       - name: Run tests (Windows)
         if: runner.os == 'Windows'
         env:
           CHROME_BINARY: ${{ steps.chrome.outputs.chrome-path }}
           HEADLESS: true
-        run: mvnw.cmd -B -DskipTests=false test
+        run: mvnw.cmd -B -DskipTests=false clean test
 
       - name: Upload test reports
         if: always()
