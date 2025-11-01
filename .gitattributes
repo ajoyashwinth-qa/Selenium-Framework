@@ -1,0 +1,24 @@
+# Normalize line endings across platforms
+* text=auto
+
+# Enforce LF for these text types (YAML/SH/Java/XML)
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf
+*.java text eol=lf
+*.xml text eol=lf
+
+# Keep Windows batch files with CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Ensure JSON and HTML use LF
+*.json text eol=lf
+*.html text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.jar binary
