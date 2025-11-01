@@ -34,6 +34,10 @@ jobs:
           echo "Chrome path: ${{ steps.chrome.outputs.chrome-path }}"
           echo "Chrome version: ${{ steps.chrome.outputs.chrome-version }}"
 
+      - name: Grant execute permission to mvnw (Unix)
+        if: runner.os != 'Windows'
+        run: chmod +x mvnw
+
       - name: Run tests (Unix)
         if: runner.os != 'Windows'
         env:
@@ -72,6 +76,9 @@ jobs:
           distribution: temurin
           java-version: '11'
           cache: maven
+
+      - name: Grant execute permission to mvnw
+        run: chmod +x mvnw
 
       - name: Build JAR
         run: ./mvnw -B -DskipTests=true package
