@@ -68,7 +68,10 @@ public class DriverFactory {
                 }
             } else {
                 // Local ChromeDriver via WebDriverManager
+                // Ensure WebDriverManager downloads a chromedriver that matches the installed browser.
+                // WebDriverManager will detect the browser on PATH or can detect via ChromeOptions binary if set.
                 WebDriverManager.chromedriver().setup();
+
                 ChromeDriver chrome = new ChromeDriver(options);
 
                 // Log some helpful info to make CI debugging easier
@@ -77,6 +80,14 @@ public class DriverFactory {
                             ? chrome.getCapabilities().getBrowserVersion()
                             : "unknown";
                     System.out.println("[DriverFactory] Local Chrome launched, browserVersion=" + browserVersion);
+
+                    // Also log the path to the driver binary that WebDriverManager set up (helpful in CI logs)
+                    try {
+                        String driverPath = System.getProperty("webdriver.chrome.driver");
+                        System.out.println("[DriverFactory] webdriver.chrome.driver=" + (driverPath != null ? driverPath : "not-set"));
+                    } catch (Exception e) {
+                        // ignore
+                    }
                 } catch (Exception e) {
                     System.out.println("[DriverFactory] Unable to determine browser version: " + e.getMessage());
                 }
