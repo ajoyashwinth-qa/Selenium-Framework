@@ -94,6 +94,12 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <!-- Run tests in-process (no fork). This avoids mismatch between the runner JVM and forked JVM versions on CI -->
+                    <forkCount>0</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <!-- Redirect test output to files so CI artifacts include full logs -->
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <trimStackTrace>false</trimStackTrace>
                 </configuration>
             </plugin>
         </plugins>
