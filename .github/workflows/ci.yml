@@ -33,9 +33,9 @@ jobs:
 
       - name: Install matching Chromedriver
         # installs a chromedriver version that matches the installed Chrome/Chromium
-        uses: browser-actions/setup-chromedriver@v1
+        uses: nanasess/setup-chromedriver@v2
         with:
-          chromedriver-version: matching
+          chromedriver-version: 'matching'
 
       - name: Show chrome version
         run: |
