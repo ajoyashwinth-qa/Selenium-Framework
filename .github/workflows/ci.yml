@@ -31,10 +31,24 @@ jobs:
         id: chrome
         uses: browser-actions/setup-chrome@v1
 
+      - name: Install matching Chromedriver
+        # installs a chromedriver version that matches the installed Chrome/Chromium
+        uses: browser-actions/setup-chromedriver@v1
+        with:
+          chromedriver-version: matching
+
       - name: Show chrome version
         run: |
           echo "Chrome path: ${{ steps.chrome.outputs.chrome-path }}"
           echo "Chrome version: ${{ steps.chrome.outputs.chrome-version }}"
+          # Show chromedriver which should now be installed on PATH
+          if command -v chromedriver >/dev/null 2>&1; then
+            chromedriver --version || true
+          elif (Get-Command chromedriver.exe -ErrorAction SilentlyContinue) {
+            & chromedriver.exe --version
+          else
+            echo "chromedriver not found on PATH"
+          fi
 
       - name: Print environment (Unix)
         if: runner.os != 'Windows'
