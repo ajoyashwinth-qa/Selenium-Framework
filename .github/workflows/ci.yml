@@ -34,6 +34,27 @@ jobs:
           echo "Chrome path: ${{ steps.chrome.outputs.chrome-path }}"
           echo "Chrome version: ${{ steps.chrome.outputs.chrome-version }}"
 
+      - name: Print environment (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          echo "Java version:" 
+          java -version || true
+          echo "Maven wrapper version:"
+          if [ -f mvnw ]; then ./mvnw -v || true; else mvn -v || true; fi
+          echo "Workspace files:"
+          ls -la || true
+          ls -la src || true
+
+      - name: Print environment (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          echo "Java version:" 
+          java -version || true
+          echo "Maven wrapper version:"
+          if exist mvnw.cmd (mvnw.cmd -v) else (mvn -v)
+          echo "Workspace files:" 
+          dir
+
       - name: Grant execute permission to mvnw (Unix)
         if: runner.os != 'Windows'
         run: chmod +x mvnw
@@ -42,12 +63,14 @@ jobs:
         if: runner.os != 'Windows'
         env:
           CHROME_BINARY: ${{ steps.chrome.outputs.chrome-path }}
+          HEADLESS: true
         run: ./mvnw -B -DskipTests=false test
 
       - name: Run tests (Windows)
         if: runner.os == 'Windows'
         env:
           CHROME_BINARY: ${{ steps.chrome.outputs.chrome-path }}
+          HEADLESS: true
         run: mvnw.cmd -B -DskipTests=false test
 
       - name: Upload test reports
@@ -56,11 +79,7 @@ jobs:
         with:
           name: reports-${{ matrix.os }}-jdk${{ matrix.java }}
           path: |
-            target/cucumber-reports.html
-            target/cucumber-report.json
-            target/junit-reports/**/*.xml
-            target/surefire-reports/**
-            target/axe-report-*.json
+            target/**
           if-no-files-found: warn
 
   package:
